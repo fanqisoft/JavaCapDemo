@@ -1,0 +1,53 @@
+spring:
+  rabbitmq:
+    host: 192.168.214.128
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+        concurrency: 2  #消费者数量
+        max-concurrency: 2  #最大消费者数量
+        prefetch: 1 #消费者每次从队列中获取的消息数量
+        auto-startup: true #消费者自动启动
+        default-requeue-rejected: false #消费失败，自动重新入队，，，重试次数超过上面的设置之后是否丢弃（false不丢弃时需要写相应代码将该消息加入死信队列）
+
+        #重试次数超过最大限制之后是否丢弃（true不丢弃时需要写相应代码将该消息加入死信队列）
+
+        #true，自动重新入队，要写相应代码将该消息加入死信队列
+
+        #false,丢弃
+        retry:
+          enabled: true #是否开启消费者重试（为false时关闭消费者重试，这时消费端代码异常会一直重复收到消息）
+          initial-interval: 1000  #重试间隔时间（单位毫秒）
+          max-attempts: 3 #最大重试次数
+          multiplier: 1.0
+          max-interval: 10000
+        acknowledge-mode: manual  #消费者消息手动确认
+    template:
+      retry:
+        enabled: true #启动发送重试策略
+        initial-interval: 1000  #初始重试间隔为1s
+        max-attempts: 3 #重试的最大次数
+        max-interval: 10000 #重试间隔最多10s
+        multiplier: 1.0 #每次重试的因子是1.0 等差
+      mandatory: true #在消息没有被路由到合适队列情况下会将消息返还给消息发布者#当mandatory标志位设置为true时，如果exchange根据自身类型和消息routingKey无法找到一个合适的queue存储消息，# 那么broker会调用basic.return方法将消息返还给生产者;当mandatory设置为false时，# 出现上述情况broker会直接将消息丢弃;通俗的讲，mandatory标志告诉broker代理服务器至少将消息route到一个队列中，# 否则就将消息return给发送者;
+    publisher-confirms: true  #发布者消息确认-成功（ConfirmCallBack）
+    publisher-returns: true #发布者消息确认-失败（ReturnCallback）
+
+
+
+  datasource:
+    username: fanqi
+    password: fanqisoft
+    url: jdbc:mysql://localhost:3306/cap_demo?serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl #
+server:
+  port: 8888

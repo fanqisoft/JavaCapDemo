@@ -1,0 +1,18 @@
+spring:
+  rabbitmq:
+    host: 192.168.214.128
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+  datasource:
+    username: fanqi
+    password: fanqisoft
+    url: jdbc:mysql://localhost:3306/cap_demo?serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+server:
+  port: 9999

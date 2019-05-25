@@ -41,7 +41,7 @@ spring:
   datasource:
     username: fanqi
     password: fanqisoft
-    url: jdbc:mysql://localhost:3306/cap_demo?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/cap_demo?serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true

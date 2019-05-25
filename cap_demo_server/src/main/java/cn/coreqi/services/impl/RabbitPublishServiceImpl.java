@@ -17,7 +17,7 @@ public class RabbitPublishServiceImpl implements RabbitPublishService {
     private RabbitPublishRepository repository;
 
     @Override
-    public void InsertRabbitPublish(RabbitPublished log) {
+    public void insertRabbitPublish(RabbitPublished log) {
         repository.save(log);
     }
 
@@ -30,7 +30,9 @@ public class RabbitPublishServiceImpl implements RabbitPublishService {
 
     @Override
     public void updateMessageLogStatus(String id, String status) {
-
+        RabbitPublished data = repository.findById(id).get();
+        data.setStatusName(status);
+        repository.save(data);
     }
 
     @Override

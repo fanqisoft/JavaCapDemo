@@ -39,7 +39,7 @@ public class RabbitmqMsgSender {
             String messageId = correlationData.getId();
             if (ack) {
                 //confirm返回成功,更新消息投递状态
-                rabbitPublishService.updateMessageLogStatus(messageId, RabbitMqConstants.MSG_SEND_SUCCESS);
+                rabbitPublishService.updateMessageLogStatus(messageId, RabbitMqConstants.MSG_SEND_POST);
             } else {
                 // 失败则进行具体的后续操作，重试或者补偿等手段。
                 log.info("异常处理...");
@@ -72,11 +72,11 @@ public class RabbitmqMsgSender {
         rabbitTemplate.setReturnCallback(this.returnCallback);
         CorrelationData correlationData = new CorrelationData(msg.getMessageId());
         try {
-            rabbitTemplate.convertAndSend(RabbitMqConstants.RABBIT_EXCHANGE,RabbitMqConstants.RABBIT_QUEUE_ROUTINGKEY, msg, correlationData);
             LocalDateTime dateTime = LocalDateTime.now();
             LocalDateTime exp = dateTime.plusDays(1);
             RabbitPublished log = new RabbitPublished(msg.getMessageId(),null,msg.getMessage().toString(),1,dateTime,dateTime,exp,RabbitMqConstants.MSG_SEND_POST);
-            rabbitPublishService.InsertRabbitPublish(log);
+            rabbitPublishService.insertRabbitPublish(log);
+            rabbitTemplate.convertAndSend(RabbitMqConstants.RABBIT_EXCHANGE,RabbitMqConstants.RABBIT_QUEUE_ROUTINGKEY, msg, correlationData);
         }
         catch (Exception e){
             //回滚事务
